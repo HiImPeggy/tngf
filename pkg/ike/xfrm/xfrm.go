@@ -67,11 +67,14 @@ func ApplyXFRMRule(tngf_is_initiator bool, xfrmiId uint32,
 	// State
 	var xfrmEncryptionAlgorithm, xfrmIntegrityAlgorithm *netlink.XfrmStateAlgo
 	if tngf_is_initiator {
+		// xfrmEncryptionAlgorithm = &netlink.XfrmStateAlgo{
+		// 	Name: XFRMEncryptionAlgorithmType(childSecurityAssociation.EncryptionAlgorithm).String(),
+		// 	Key:  childSecurityAssociation.InitiatorToResponderEncryptionKey,
+		// }
 		xfrmEncryptionAlgorithm = &netlink.XfrmStateAlgo{
-			Name: XFRMEncryptionAlgorithmType(childSecurityAssociation.EncryptionAlgorithm).String(),
-			Key:  childSecurityAssociation.ResponderToInitiatorEncryptionKey,
+			Name: "ecb(cipher_null)",
+			Key:  nil,
 		}
-
 		if childSecurityAssociation.IntegrityAlgorithm != 0 {
 			xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
 				Name: XFRMIntegrityAlgorithmType(childSecurityAssociation.IntegrityAlgorithm).String(),
@@ -79,11 +82,14 @@ func ApplyXFRMRule(tngf_is_initiator bool, xfrmiId uint32,
 			}
 		}
 	} else {
+		// xfrmEncryptionAlgorithm = &netlink.XfrmStateAlgo{
+		// 	Name: XFRMEncryptionAlgorithmType(childSecurityAssociation.EncryptionAlgorithm).String(),
+		// 	Key:  childSecurityAssociation.InitiatorToResponderEncryptionKey,
+		// }
 		xfrmEncryptionAlgorithm = &netlink.XfrmStateAlgo{
-			Name: XFRMEncryptionAlgorithmType(childSecurityAssociation.EncryptionAlgorithm).String(),
-			Key:  childSecurityAssociation.InitiatorToResponderEncryptionKey,
+			Name: "ecb(cipher_null)",
+			Key:  nil,
 		}
-
 		if childSecurityAssociation.IntegrityAlgorithm != 0 {
 			xfrmIntegrityAlgorithm = &netlink.XfrmStateAlgo{
 				Name: XFRMIntegrityAlgorithmType(childSecurityAssociation.IntegrityAlgorithm).String(),
@@ -91,7 +97,6 @@ func ApplyXFRMRule(tngf_is_initiator bool, xfrmiId uint32,
 			}
 		}
 	}
-
 	xfrmState := new(netlink.XfrmState)
 
 	xfrmState.Src = childSecurityAssociation.PeerPublicIPAddr
